@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)https://payplus.yondermedia.shop/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>payment</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href="/assets/bootstrap/payres/index.css" media="all">
+    <link rel="stylesheet" href="/assets/bootstrap/payres/index(1).css">
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="/assets/bootstrap/payres/index.js"></script>
+    <script src="/assets/bootstrap/payres/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="/assets/bootstrap/payres/getUrlParams.js"></script>
+    <script type="text/javascript" src="/assets/bootstrap/payres/common.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="input">
+        <div class="input_box">
+            <div class="money_box">
+                <div class="input_box_title">Amount Payable</div>
+                <div class="input_box_money">₹ <font id="money" class="money_input"></font>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="banks">
+        <div class="banks_main">
+            <div class="banks_body">
+                <div class="banks_title">
+                    <div class="banks_title_box">
+                        <i class="banks_title_icon"></i>
+                        UPI
+                    </div>
+                </div>
+                <div class="banks_box">
+                    <div class="banks_box_ul">
+                        <form class="banks_list">
+                            <div class="banks_li active">
+                                <div class="banks_li_left">
+                                    <span class="banks_li_img">
+                                        <img src="/assets/bootstrap/payres/Paytm.png">
+                                    </span>
+                                    <span>PayTM</span>
+                                </div>
+                                <span>
+                                    <div class="banks_Radio"></div>
+                                </span>
+                                <input style="display:none;" checked="checked" type="radio" name="bank" value="paytm">
+                            </div>
+                            <div class="banks_li">
+                                <div class="banks_li_left">
+                                    <span class="banks_li_img">
+                                        <img src="/assets/bootstrap/payres/phonepe.png">
+                                    </span>
+                                    <span>PhonePe</span>
+                                </div>
+                                <span>
+                                    <div class="banks_Radio"></div>
+                                </span>
+                                <input style="display:none;" type="radio" name="bank" value="phonepe">
+                            </div>
+
+                            <div class="banks_li">
+                                <div class="banks_li_left">
+                                    <span class="banks_li_img">
+                                        <img src="/assets/bootstrap/payres/gpay.png">
+                                    </span>
+                                    <span>Google Pay</span>
+                                </div>
+                                <span>
+                                                                <div class="banks_Radio"></div>
+                                                            </span>
+                                <input style="display:none;" type="radio" name="bank" value="gpay">
+                            </div>
+                            <div class="banks_li">
+                                <div class="banks_li_left">
+                                    <span class="banks_li_img">
+                                        <img src="/assets/bootstrap/payres/apps.png">
+                                    </span>
+                                    <span>Other Apps</span>
+                                </div>
+                                <span>
+                                    <div class="banks_Radio"></div>
+                                </span>
+                                <input style="display:none;" type="radio" name="bank" value="upi">
+                            </div>
+
+
+                            <div class="banks_li_btn">
+                                <button id="submit" type="button" class="btn_button" hidden="">Pay</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--<div class="loading" id="loading">-->
+<!--    <div class="loadEffect">-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--    </div>-->
+<!--    <div class="loading_text">-->
+<!--        checking, please don't refresh or close the page-->
+<!--    </div>-->
+<!--    <div class="loading_time" id="load_time">-->
+<!--        <span id="T1"></span>-->
+<!--    </div>-->
+<!--</div>-->
+<script type="text/javascript">
+    var pay_list = {}
+    window.onload = function () {
+        document.getElementById("money").textContent = getQueryString("amount")
+        var mybtn = document.getElementById('submit');
+        var bank = document.getElementsByName('bank');
+
+        mybtn.onclick = function () {
+            var radio = 0;
+            for (var i = 0; i < bank.length; i++) {
+                if (bank[i].checked == true) {
+                    radio = bank[i].value;
+                }
+            }
+
+            var url = pay_list[radio]
+            /*
+            if (url.indexOf('paytm') !== -1){
+                //url = url.replace('pn=JNA%20Tech%20Rummy', 'pn=pay')
+                //url = url.replace('&mode=00', '')
+            }*/
+            console.log(url)
+            console.log(radio)
+            $.ajax({
+                url: REQ_URL + '/api/callPayApp/' + getQueryString("orderNo") + '?method=' + radio,
+                type: "GET",
+                success: function (data) {
+                },
+                error: function (e) {
+                }
+            });
+            // window.open(url)
+            // location.href = url;
+
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000)
+            //
+            // setTimeout(function () {
+            //     window.open(url)
+            // }, 1500)
+
+            // location.href = url
+
+
+            /*var a = document.createElement("a")
+            var event = new MouseEvent("click")
+            a.href = url
+            a.target='_blank'
+            a.dispatchEvent(event)*/
+
+
+        };
+    };
+
+    $(function () {
+        $('.banks_li').click(function () {
+            $('.banks_li').removeClass("active");
+            $('.banks_li').children('input').prop('checked', false);
+            $(this).addClass('active');
+            $(this).children('input').prop('checked', true);
+            return false;
+        });
+
+        run();
+    });
+
+    // var interval
+
+    function run() {
+        console.log("run")
+        $.ajax({
+            type: 'get',
+            url:  '/api/payment/upi/' + getQueryString("order_no"),
+            success: function (response) {
+                if (response.code === "0000") {
+                    pay_list = response.data
+                    // clearInterval(interval)
+                    document.getElementById("submit").textContent = 'Pay ' + getQueryString("amount")
+                    document.getElementById("submit").hidden = false
+                }
+            },
+        });
+    }
+
+
+    setTimeout(function () {
+        queryOrder(true);
+    }, 3000)
+
+    function queryOrder(first) {
+        $.ajax({
+            url:  '/api/payment/status/' + getQueryString("order_no"),
+            type: "GET",
+            success: function (data) {
+                if (data.status && data.status == 'success') {
+                    // showError("Payment succeeded");
+                    window.location.href = data.return_url;
+                }
+            },
+            error: function (e) {
+                // showError("network connection error");
+            }
+        });
+        setTimeout(function () {
+            queryOrder(true);
+        }, 3000)
+    }
+
+</script>
+
+
+</body></html>

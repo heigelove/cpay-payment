@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title></title>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="payment-container">
+        
+           <table width="500px;">
+               <tr>
+                   <td align="center" valign="middle">Do Not Refresh or Press Back <br /> Redirecting to airpay</td>
+               </tr>
+               <tr>
+                   <td align="center" valign="middle">
+                       <form action="https://payments.airpay.co.in/pay/v4/?token=" id="airpayForm" method="post">
+                           <input type="hidden" id="privatekey" name="privatekey" value="">
+                           <input type="hidden" id="merchant_id" name="merchant_id" value="">
+                           <input type="hidden" id="encdata" name="encdata" value="">
+                           <input type="hidden" id="checksum" name="checksum" value="">
+                       </form>
+                   </td>
+
+               </tr>
+           </table>
+
+    </div>
+</div>
+
+
+<script src="/assets/bootstrap/js/jquery.min.js"></script>
+
+<script>
+let paymentParams = {};
+
+// 页面加载时初始化
+$(document).ready(function() {
+    // 解析URL参数
+    parseUrlParams();
+    // 初始化支付页面
+    getOrderInfo();
+});
+
+// 解析URL参数
+function parseUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    paymentParams = {
+        // 基础订单信息
+        orderNo: urlParams.get('order_no') || '',
+    };
+    
+    console.log('支付参数:', paymentParams);
+}
+
+
+// 获取订单信息
+function getOrderInfo() {
+    if (!paymentParams.orderNo) return;
+
+    $.ajax({
+        url: `/api/payment/info/${paymentParams.orderNo}`,
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function() {
+            // 可以在这里添加加载动画或其他提示
+        },
+        success: function(response) {
+            if (!response.code) {
+                $('#airpayForm').attr('action', response.action);
+                $('#privatekey').val(response.privatekey);
+                $('#merchant_id').val(response.merchant_id);
+                $('#encdata').val(response.encdata);
+                $('#checksum').val(response.checksum);
+                $('#airpayForm').submit();
+            } else {
+                console.error('获取订单信息失败:', response.message);
+            }
+        },
+        error: function(xhr) {
+            console.error('支付状态查询失败:', xhr);
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

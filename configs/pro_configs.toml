@@ -1,0 +1,44 @@
+[server]
+  port = 9998
+
+[hashids]
+  length = 12
+  secret = "6ab6122836cfef95f8db"
+
+[language]
+  local = "zh-cn"
+
+[mail]
+  host = "smtp.163.com"
+  pass = ""
+  port = 465
+  to = ""
+  user = ""
+
+[mysql]
+
+  [mysql.base]
+    connmaxlifetime = 60
+    maxidleconn = 60
+    maxopenconn = 10
+
+  [mysql.read]
+    addr = "pay-instance-1-ap-south-1b.cn2iiwowiif4.ap-south-1.rds.amazonaws.com"
+    name = "cpay"
+    pass = "HaRUa8nQSyaR875BFXwV"
+    user = "admin"
+
+  [mysql.write]
+    addr = "pay-instance-1.cn2iiwowiif4.ap-south-1.rds.amazonaws.com:3306"
+    name = "cpay"
+    pass = "HaRUa8nQSyaR875BFXwV"
+    user = "admin"
+
+[redis]
+  addr = "master.pay.5ga9bk.aps1.cache.amazonaws.com:6379"
+  db = "0"
+  maxretries = 3
+  minidleconns = 5
+  pass = ""
+  poolsize = 10
+
