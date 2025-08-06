@@ -85,7 +85,7 @@ func (h *handler) Status() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusInternalServerError,
 				code.CacheGetError,
-				"获取订单信息失败").WithError(err),
+				"Failed to obtain order information").WithError(err),
 			)
 			return
 		}
@@ -94,7 +94,7 @@ func (h *handler) Status() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusNotFound,
 				code.OrderNotFound,
-				"订单未找到"),
+				"Order not found"),
 			)
 			return
 		}
@@ -105,7 +105,7 @@ func (h *handler) Status() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusInternalServerError,
 				code.CacheGetError,
-				"获取订单状态失败").WithError(err),
+				"Order not found").WithError(err),
 			)
 			return
 		}
@@ -113,7 +113,7 @@ func (h *handler) Status() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusNotFound,
 				code.OrderNotFound,
-				"订单状态未找到").WithError(err),
+				"Order not found").WithError(err),
 			)
 			return
 		}
@@ -122,7 +122,7 @@ func (h *handler) Status() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusInternalServerError,
 				code.CacheGetError,
-				"解析订单状态失败").WithError(err),
+				"Failed to parse order status").WithError(err),
 			)
 			return
 		}

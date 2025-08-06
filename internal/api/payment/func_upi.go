@@ -75,7 +75,7 @@ func (h *handler) Upi() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusInternalServerError,
 				code.CacheGetError,
-				"获取订单URL失败").WithError(err),
+				"Failed to obtain the order URL").WithError(err),
 			)
 			return
 		}
@@ -83,7 +83,7 @@ func (h *handler) Upi() core.HandlerFunc {
 			ctx.AbortWithError(core.Error(
 				http.StatusNotFound,
 				code.OrderNotFound,
-				"获取订单URL失败"),
+				"Failed to obtain the order URL"),
 			)
 			return
 		}
