@@ -16,6 +16,7 @@ type statusRequest struct {
 }
 
 type statusResponse struct {
+	Amount    string `json:"amount"`     // 订单金额
 	OrderNo   string `json:"order_no"`   // 订单号
 	Status    string `json:"status"`     // 订单状态
 	ReturnUrl string `json:"return_url"` // 同步跳转地址
@@ -117,7 +118,7 @@ func (h *handler) Status() core.HandlerFunc {
 			)
 			return
 		}
-		order := &statusResponse{}
+		order := &PayInResponse{}
 		if err := json.Unmarshal([]byte(info), order); err != nil {
 			ctx.AbortWithError(core.Error(
 				http.StatusInternalServerError,
@@ -126,10 +127,10 @@ func (h *handler) Status() core.HandlerFunc {
 			)
 			return
 		}
-
+		res.Amount = fmt.Sprintf("%.2f", order.Amount)
 		res.OrderNo = req.OrderNo
 		res.Status = order.Status
-		res.ReturnUrl = order.ReturnUrl
+		res.ReturnUrl = order.ReturnURL
 
 		ctx.Payload(res)
 	}

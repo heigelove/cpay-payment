@@ -1,232 +1,539 @@
 <!DOCTYPE html>
-<!-- saved from url=(0033)https://payplus.yondermedia.shop/ -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <title>payment</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="renderer" content="webkit|ie-comp|ie-stand">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-    <link rel="stylesheet" href="/assets/bootstrap/payres/index.css" media="all">
-    <link rel="stylesheet" href="/assets/bootstrap/payres/index(1).css">
-    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-    <script src="/assets/bootstrap/payres/index.js"></script>
-    <script src="/assets/bootstrap/payres/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="/assets/bootstrap/payres/getUrlParams.js"></script>
-    <script type="text/javascript" src="/assets/bootstrap/payres/common.js"></script>
-</head>
-<body>
-<div id="app">
-    <div class="input">
-        <div class="input_box">
-            <div class="money_box">
-                <div class="input_box_title">Amount Payable</div>
-                <div class="input_box_money">₹ <font id="money" class="money_input"></font>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="banks">
-        <div class="banks_main">
-            <div class="banks_body">
-                <div class="banks_title">
-                    <div class="banks_title_box">
-                        <i class="banks_title_icon"></i>
-                        UPI
-                    </div>
-                </div>
-                <div class="banks_box">
-                    <div class="banks_box_ul">
-                        <form class="banks_list">
-                            <div class="banks_li active">
-                                <div class="banks_li_left">
-                                    <span class="banks_li_img">
-                                        <img src="/assets/bootstrap/payres/Paytm.png">
-                                    </span>
-                                    <span>PayTM</span>
-                                </div>
-                                <span>
-                                    <div class="banks_Radio"></div>
-                                </span>
-                                <input style="display:none;" checked="checked" type="radio" name="bank" value="paytm">
-                            </div>
-                            <div class="banks_li">
-                                <div class="banks_li_left">
-                                    <span class="banks_li_img">
-                                        <img src="/assets/bootstrap/payres/phonepe.png">
-                                    </span>
-                                    <span>PhonePe</span>
-                                </div>
-                                <span>
-                                    <div class="banks_Radio"></div>
-                                </span>
-                                <input style="display:none;" type="radio" name="bank" value="phonepe">
-                            </div>
+<html lang="en">
 
-                            <div class="banks_li">
-                                <div class="banks_li_left">
-                                    <span class="banks_li_img">
-                                        <img src="/assets/bootstrap/payres/gpay.png">
-                                    </span>
-                                    <span>Google Pay</span>
-                                </div>
-                                <span>
-                                                                <div class="banks_Radio"></div>
-                                                            </span>
-                                <input style="display:none;" type="radio" name="bank" value="gpay">
-                            </div>
-                            <div class="banks_li">
-                                <div class="banks_li_left">
-                                    <span class="banks_li_img">
-                                        <img src="/assets/bootstrap/payres/apps.png">
-                                    </span>
-                                    <span>Other Apps</span>
-                                </div>
-                                <span>
-                                    <div class="banks_Radio"></div>
-                                </span>
-                                <input style="display:none;" type="radio" name="bank" value="upi">
-                            </div>
-
-
-                            <div class="banks_li_btn">
-                                <button id="submit" type="button" class="btn_button" hidden="">Pay</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-<!--<div class="loading" id="loading">-->
-<!--    <div class="loadEffect">-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--        <span></span>-->
-<!--    </div>-->
-<!--    <div class="loading_text">-->
-<!--        checking, please don't refresh or close the page-->
-<!--    </div>-->
-<!--    <div class="loading_time" id="load_time">-->
-<!--        <span id="T1"></span>-->
-<!--    </div>-->
-<!--</div>-->
-<script type="text/javascript">
-    var pay_list = {}
-    window.onload = function () {
-        document.getElementById("money").textContent = getQueryString("amount")
-        var mybtn = document.getElementById('submit');
-        var bank = document.getElementsByName('bank');
-
-        mybtn.onclick = function () {
-            var radio = 0;
-            for (var i = 0; i < bank.length; i++) {
-                if (bank[i].checked == true) {
-                    radio = bank[i].value;
-                }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Checkout - Pay</title>
+    <!-- <script type="module" crossorigin="" src="/assets/bootstrap/res/index.js"></script>
+  <link rel="modulepreload" crossorigin="" href="/assets/bootstrap/res/vendor.js"> -->
+    <script src="/assets/bootstrap/js/jquery.min.js"></script>
+    <link rel="stylesheet" crossorigin="" href="/assets/bootstrap/res/index.css">
+    <style id="_goober">
+        @keyframes go2264125279 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
             }
 
-            var url = pay_list[radio]
-            /*
-            if (url.indexOf('paytm') !== -1){
-                //url = url.replace('pn=JNA%20Tech%20Rummy', 'pn=pay')
-                //url = url.replace('&mode=00', '')
-            }*/
-            console.log(url)
-            console.log(radio)
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go3020080000 {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go463499852 {
+            from {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(90deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go1268368563 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes go1310225428 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go651618207 {
+            0% {
+                height: 0;
+                width: 0;
+                opacity: 0;
+            }
+
+            40% {
+                height: 0;
+                width: 6px;
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+                height: 10px;
+            }
+        }
+
+        @keyframes go901347462 {
+            from {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .go4109123758 {
+            z-index: 9999;
+        }
+
+        .go4109123758>* {
+            pointer-events: auto;
+        }
+
+        .go2072408551 {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            color: #363636;
+            line-height: 1.3;
+            will-change: transform;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);
+            max-width: 350px;
+            pointer-events: auto;
+            padding: 8px 10px;
+            border-radius: 8px;
+        }
+
+        .go685806154 {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 20px;
+            min-height: 20px;
+        }
+
+        .go1858758034 {
+            width: 12px;
+            height: 12px;
+            box-sizing: border-box;
+            border: 2px solid;
+            border-radius: 100%;
+            border-color: #e0e0e0;
+            border-right-color: #616161;
+            animation: go1268368563 1s linear infinite;
+        }
+
+        .go1579819456 {
+            position: absolute;
+        }
+
+        .go2534082608 {
+            width: 20px;
+            opacity: 0;
+            height: 20px;
+            border-radius: 10px;
+            background: #ff4b4b;
+            position: relative;
+            transform: rotate(45deg);
+            animation: go2264125279 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 100ms;
+        }
+
+        .go2534082608:after,
+        .go2534082608:before {
+            content: '';
+            animation: go3020080000 0.15s ease-out forwards;
+            animation-delay: 150ms;
+            position: absolute;
+            border-radius: 3px;
+            opacity: 0;
+            background: #fff;
+            bottom: 9px;
+            left: 4px;
+            height: 2px;
+            width: 12px;
+        }
+
+        .go2534082608:before {
+            animation: go463499852 0.15s ease-out forwards;
+            animation-delay: 180ms;
+            transform: rotate(90deg);
+        }
+
+        .go3958317564 {
+            display: flex;
+            justify-content: center;
+            margin: 4px 10px;
+            color: inherit;
+            flex: 1 1 auto;
+            white-space: pre-line;
+        }
+
+        @keyframes go3223188581 {
+            0% {
+                transform: translate3d(0, -200%, 0) scale(.6);
+                opacity: .5;
+            }
+
+            100% {
+                transform: translate3d(0, 0, 0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go502128938 {
+            0% {
+                transform: translate3d(0, 0, -1px) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate3d(0, -150%, -1px) scale(.6);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="_container_5o0k3_1">
+            <div class="_body_5o0k3_21">
+                <div class="_content_5o0k3_26">
+                    <div class="_box_1rf51_1" id="payment_box">
+                        <header class="_box-head_1rf51_9">
+                            <section class="_pay-amount-info_1n6gf_1">
+                                <div>Pay</div>
+                                <div id="pay-amount"></div>
+                            </section>
+                            <h3 class="_box-title_1rf51_19">Payment methods</h3>
+                            <p>Choose a payment method to pay</p>
+                        </header>
+                        <div class="_payment-list_1mnym_1">
+                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('phonepe')">
+                                <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/phonepe.svg"
+                                        alt=""><span>PhonePe</span></div>
+                                <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 18 18">
+                                        <polyline fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2" points="6.5 3.5 12.5 9 6.5 14.5">
+                                        </polyline>
+                                    </svg></div>
+                            </div>
+                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('gpay')">
+                                <div class="_payment-button__left_5ii3x_17"><img
+                                        src="/assets/bootstrap/res/googlepay.svg" alt=""><span>Google Pay</span></div>
+                                <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 18 18">
+                                        <polyline fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2" points="6.5 3.5 12.5 9 6.5 14.5">
+                                        </polyline>
+                                    </svg></div>
+                            </div>
+                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('paytm')">
+                                <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/paytm.svg"
+                                        alt=""><span>Paytm</span>
+                                </div>
+                                <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 18 18">
+                                        <polyline fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2" points="6.5 3.5 12.5 9 6.5 14.5">
+                                        </polyline>
+                                    </svg></div>
+                            </div>
+                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('bhim')">
+                                <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/bhim.svg"
+                                        alt=""><span>BHIM</span></div>
+                                <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 18 18">
+                                        <polyline fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2" points="6.5 3.5 12.5 9 6.5 14.5">
+                                        </polyline>
+                                    </svg></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error 500 Section -->
+                    <div class="_box_1rf51_1" id="error_500" style="display: none;">
+                        <div class="_error-result_1mjys_1">
+                            <figure class="_error-status_1mjys_5"><svg xmlns="http://www.w3.org/2000/svg" width="160"
+                                    height="160" viewBox="0 0 160 160">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <circle cx="80" cy="80" r="79.75" stroke="#E6A23C" stroke-width="0.5"
+                                            opacity="0.2"></circle>
+                                        <circle cx="80" cy="80" r="59.75" stroke="#E6A23C" stroke-width="0.5"
+                                            opacity="0.4"></circle>
+                                        <circle cx="80" cy="80" r="47.5" stroke="#E6A23C" opacity="0.6"></circle>
+                                        <circle cx="80" cy="80" r="40" fill="#E6A23C"></circle>
+                                        <g fill="#FFF" transform="translate(78 67)">
+                                            <circle cx="2" cy="24" r="2" fill-rule="nonzero"></circle>
+                                            <polygon points="0 1 1 0 3 0 4 1 3 20 1 20"></polygon>
+                                        </g>
+                                    </g>
+                                </svg></figure>
+                            <h4>500</h4>
+                            <p>Something went wrong</p>
+                        </div>
+                    </div>
+
+                    <!-- PhonePe Payment Section -->
+                    <div class="_content_18l8j_1" id="phonepe_payment_section" style="display: none;">
+                        <div class="_box_1rf51_1">
+                            <div class="_payment-countdown_18l8j_46">
+                                <p><strong class="countdown_timer" id="phonepe_countdown_timer">5:00</strong></p>
+                                <p><span>mins</span></p>
+                            </div>
+                            <div class="_amount_18l8j_10"></div>
+                            <div class="_tips_18l8j_18">Please open &amp; complete the payment in your PhonePe app</div><img
+                                src="/assets/bootstrap/res/phonepe.svg" class="_head-icon_18l8j_5">
+                        </div>
+                        <div class="_choose-other-payment_18l8j_25">
+                            <p><strong>Can’t pay with UPI ?</strong></p>
+                            <p><a href="javascript:;" class="back_options">Choose other payment options</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Google Pay Payment Section -->
+                    <div class="_content_18l8j_1" id="gpay_payment_section" style="display: none;">
+                        <div class="_box_1rf51_1">
+                            <div class="_payment-countdown_18l8j_46">
+                                <p><strong class="countdown_timer" id="gpay_countdown_timer">5:00</strong></p>
+                                <p><span>mins</span></p>
+                            </div>
+                            <div class="_amount_18l8j_10"></div>
+                            <div class="_tips_18l8j_18">Please open &amp; complete the payment in your Google Pay app</div><img
+                                src="/assets/bootstrap/res/googlepay.svg"
+                                class="_head-icon_18l8j_5">
+                        </div>
+                        <div class="_choose-other-payment_18l8j_25">
+                            <p><strong>Can’t pay with UPI ?</strong></p>
+                            <p><a href="javascript:;" class="back_options">Choose other payment options</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Paytm Payment Section -->
+                    <div class="_content_18l8j_1" id="paytm_payment_section" style="display: none;">
+                        <div class="_box_1rf51_1">
+                            <div class="_payment-countdown_18l8j_46">
+                                <p><strong class="countdown_timer" id="paytm_countdown_timer">5:00</strong></p>
+                                <p><span>mins</span></p>
+                            </div>
+                            <div class="_amount_18l8j_10"></div>
+                            <div class="_tips_18l8j_18">Please open &amp; complete the payment in your Paytm app</div><img
+                                src="/assets/bootstrap/res/paytm.svg" class="_head-icon_18l8j_5">
+                        </div>
+                        <div class="_choose-other-payment_18l8j_25">
+                            <p><strong>Can’t pay with UPI ?</strong></p>
+                            <p><a href="javascript:;" class="back_options">Choose other payment options</a></p>
+                        </div>
+                    </div>
+
+                    <!-- BHIM Payment Section -->
+                    <div class="_content_18l8j_1" id="bhim_payment_section" style="display: none;">
+                        <div class="_box_1rf51_1">
+                            <div class="_payment-countdown_18l8j_46">
+                                <p><strong class="countdown_timer" id="bhim_countdown_timer">5:00</strong></p>
+                                <p><span>mins</span></p>
+                            </div>
+                            <div class="_amount_18l8j_10"></div>
+                            <div class="_tips_18l8j_18">Please open &amp; complete the payment in your Bank app</div><img
+                                src="/assets/bootstrap/res/bhim.svg"
+                                class="_head-icon_18l8j_5">
+                        </div>
+                        <div class="_choose-other-payment_18l8j_25">
+                            <p><strong>Can’t pay with UPI ?</strong></p>
+                            <p><a href="javascript:;" class="back_options">Choose other payment options</a></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="_footer_5o0k3_31">
+                <div class="_upi-brand-box_1kqav_1"><img src="/assets/bootstrap/res/upi.svg" alt="UPI"></div>
+            </div>
+        </div>
+        <div style="position: fixed; z-index: 9999; inset: 16px; pointer-events: none;"></div>
+    </div>
+
+
+    <script>
+        var timer = null;
+        var countdownTimer = null;
+        var pay_list = [];
+        function getQueryString(name) {
+            let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            let r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return decodeURIComponent(r[2]);
+            }
+            return null;
+        }
+
+        function getParams() {
+            let params = window.location.href.split("?");
+            if (params.length > 1) {
+                return params[1]
+            }
+        }
+        function getUpiInfo() {
             $.ajax({
-                url: REQ_URL + '/api/callPayApp/' + getQueryString("orderNo") + '?method=' + radio,
-                type: "GET",
-                success: function (data) {
+                type: 'get',
+                url: '/api/payment/upi/' + getQueryString("order_no"),
+                success: function (response) {
+                    if (response.code === "0000") {
+                        pay_list = response.data
+                    }else{
+                        $("#error_500").show();
+                        $("#payment_box").hide();
+                        $("._content_18l8j_1").hide();
+                        if (timer) {
+                            clearInterval(timer);
+                        }
+                        if (countdownTimer) {
+                            clearInterval(countdownTimer);
+                        }
+                    }
                 },
-                error: function (e) {
+                error: function () {
+                    $("#error_500").show();
+                    $("#payment_box").hide();
+                    $("._content_18l8j_1").hide();
+                    if (timer) {
+                        clearInterval(timer);
+                    }
+                    if (countdownTimer) {
+                        clearInterval(countdownTimer);
+                    }
                 }
             });
-            // window.open(url)
-            // location.href = url;
+        }
 
+        function getOrderStatus() {
+            $.ajax({
+                type: 'get',
+                url: '/api/payment/status/' + getQueryString("order_no"),
+                success: function (response) {
+                    if (response.amount) {
+                        $("#pay-amount").text("₹ " + response.amount);
+                        $("._amount_18l8j_10").text("₹ " + response.amount);
+                    }
+                    if (response.status) {
+                        if (response.status === "success") {
+                            clearInterval(timer);
+                            clearInterval(countdownTimer);
+                            alert("Payment successful!");
+                            if (response.return_url != "") {
+                                window.location.href = response.return_url;
+                            }
+                        } else if (response.status === "failed") {
+                            clearInterval(timer);
+                            clearInterval(countdownTimer);
+                            alert("Payment failed. Please try again.");
+                        }
+                    }else{
+                        $("#error_500").show();
+                        $("#payment_box").hide();
+                        $("._content_18l8j_1").hide();
+                        if (timer) {
+                            clearInterval(timer);
+                        }
+                        if (countdownTimer) {
+                            clearInterval(countdownTimer);
+                        }
+                    }
+                },
+                error: function () {
+                    $("#error_500").show();
+                    $("#payment_box").hide();
+                    $("._content_18l8j_1").hide();
+                    if (timer) {
+                        clearInterval(timer);
+                    }
+                    if (countdownTimer) {
+                        clearInterval(countdownTimer);
+                    }
+                }
+            });
+        }
+
+        function checkPayment(paymentMethod) {
+            $("#payment_box").hide();
+            $("#" + paymentMethod + "_payment_section").show();
+            var url = pay_list[paymentMethod]||"";
+            if (url=="") {
+                alert("Payment method not available.");
+                return;
+            }
+            startCountdown(300, $("#" + paymentMethod + "_countdown_timer"));
             setTimeout(function () {
                 window.location.href = url;
-            }, 1000)
-            //
-            // setTimeout(function () {
-            //     window.open(url)
-            // }, 1500)
-
-            // location.href = url
-
-
-            /*var a = document.createElement("a")
-            var event = new MouseEvent("click")
-            a.href = url
-            a.target='_blank'
-            a.dispatchEvent(event)*/
-
-
-        };
-    };
-
-    $(function () {
-        $('.banks_li').click(function () {
-            $('.banks_li').removeClass("active");
-            $('.banks_li').children('input').prop('checked', false);
-            $(this).addClass('active');
-            $(this).children('input').prop('checked', true);
-            return false;
-        });
-
-        run();
-    });
-
-    // var interval
-
-    function run() {
-        console.log("run")
-        $.ajax({
-            type: 'get',
-            url:  '/api/payment/upi/' + getQueryString("order_no"),
-            success: function (response) {
-                if (response.code === "0000") {
-                    pay_list = response.data
-                    // clearInterval(interval)
-                    document.getElementById("submit").textContent = 'Pay ' + getQueryString("amount")
-                    document.getElementById("submit").hidden = false
-                }
-            },
-        });
-    }
-
-
-    setTimeout(function () {
-        queryOrder(true);
-    }, 3000)
-
-    function queryOrder(first) {
-        $.ajax({
-            url:  '/api/payment/status/' + getQueryString("order_no"),
-            type: "GET",
-            success: function (data) {
-                if (data.status && data.status == 'success') {
-                    // showError("Payment succeeded");
-                    window.location.href = data.return_url;
-                }
-            },
-            error: function (e) {
-                // showError("network connection error");
+            }, 1000);
+            if (timer) {
+                clearInterval(timer);
             }
+            timer = setInterval(function () {
+                getOrderStatus();
+            }, 5000);
+        }
+
+        // countdown timer
+        function startCountdown(duration, display) {
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+            }
+            display.text("5:00");
+            var timer = duration, minutes, seconds;
+            countdownTimer=setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                // minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                if (--timer < 0) {
+                    // timer = duration;
+                    clearInterval(countdownTimer);
+                    return;
+                }
+                display.text(minutes + ":" + seconds);
+            }, 1000);
+        }
+
+        $(document).ready(function () {
+            if (timer) {
+                clearInterval(timer);
+            }
+            timer = setInterval(function () {
+                getOrderStatus(true);
+            }, 5000)
+            getUpiInfo();
+            getOrderStatus();
+
+            $(".back_options").click(function () {
+                $("._content_18l8j_1").hide();
+                $("#payment_box").show();
+            });
         });
-        setTimeout(function () {
-            queryOrder(true);
-        }, 3000)
-    }
+    </script>
 
-</script>
+</body>
 
-
-</body></html>
+</html>
