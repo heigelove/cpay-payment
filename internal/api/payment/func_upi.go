@@ -1,10 +1,10 @@
 package payment
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
-	"strings"
 
 	"github.com/heigelove/cpay-payment/internal/code"
 	"github.com/heigelove/cpay-payment/internal/pkg/core"
@@ -29,6 +29,12 @@ type upiResponseData struct {
 	Phonepe string `json:"phonepe"`
 	UPI     string `json:"upi"`
 	PA      string `json:"pa"`
+}
+
+type WalletInfo struct {
+	WalletName string `json:"wallet_name"` // 钱包名称
+	WalletCode string `json:"wallet_code"` // 钱包代码
+	PayUrl     string `json:"pay_url"`     // 钱包链接
 }
 
 // extractPAFromUPI 从UPI字符串中提取pa参数的值
@@ -87,16 +93,40 @@ func (h *handler) Upi() core.HandlerFunc {
 			)
 			return
 		}
-		baseUrl := strings.Replace(url, "upi://", "", 1)
-
+		var walletList []WalletInfo
+		err = json.Unmarshal([]byte(url), &walletList)
+		if err != nil {
+			ctx.AbortWithError(core.Error(
+				http.StatusInternalServerError,
+				code.OrderNotFound,
+				"Failed to parse the order URL").WithError(err),
+			)
+			return
+		}
+		var upiUrl string
 		data := upiResponseData{}
-		data.Default = url
-		data.Bhim = fmt.Sprintf("bhim://upi/%s", baseUrl)
-		data.Gpay = fmt.Sprintf("gpay://upi/%s", baseUrl)
-		data.Paytm = fmt.Sprintf("paytmmp://%s", baseUrl)
-		data.Phonepe = fmt.Sprintf("phonepe://%s", baseUrl)
-		data.UPI = url
-		data.PA = extractPAFromUPI(url)
+		for _, wallet := range walletList {
+			if wallet.WalletCode == "upi" {
+				upiUrl = wallet.PayUrl
+			}
+			if wallet.WalletCode == "bhim" {
+				data.Bhim = wallet.PayUrl
+			}
+			if wallet.WalletCode == "gpay" {
+				data.Gpay = wallet.PayUrl
+			}
+			if wallet.WalletCode == "paytm" {
+				data.Paytm = wallet.PayUrl
+			}
+			if wallet.WalletCode == "phonepe" {
+				data.Phonepe = wallet.PayUrl
+			}
+		}
+		data.Default = upiUrl
+		data.UPI = upiUrl
+		if upiUrl != "" {
+			data.PA = extractPAFromUPI(upiUrl)
+		}
 
 		res.Code = "0000"
 		res.Msg = "success"

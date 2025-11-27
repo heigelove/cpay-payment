@@ -228,7 +228,7 @@
                             <p>Choose a payment method to pay</p>
                         </header>
                         <div class="_payment-list_1mnym_1">
-                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('phonepe')">
+                            <div class="_payment-button_5ii3x_1" id="phonepe" onclick="checkPayment('phonepe')">
                                 <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/phonepe.svg"
                                         alt=""><span>PhonePe</span></div>
                                 <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +238,7 @@
                                         </polyline>
                                     </svg></div>
                             </div>
-                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('gpay')">
+                            <div class="_payment-button_5ii3x_1" id="gpay" onclick="checkPayment('gpay')">
                                 <div class="_payment-button__left_5ii3x_17"><img
                                         src="/assets/bootstrap/res/googlepay.svg" alt=""><span>Google Pay</span></div>
                                 <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
@@ -248,7 +248,7 @@
                                         </polyline>
                                     </svg></div>
                             </div>
-                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('paytm')">
+                            <div class="_payment-button_5ii3x_1" id="paytm" onclick="checkPayment('paytm')">
                                 <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/paytm.svg"
                                         alt=""><span>Paytm</span>
                                 </div>
@@ -259,7 +259,7 @@
                                         </polyline>
                                     </svg></div>
                             </div>
-                            <div class="_payment-button_5ii3x_1" onclick="checkPayment('bhim')">
+                            <div class="_payment-button_5ii3x_1" id="bhim" onclick="checkPayment('bhim')">
                                 <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/bhim.svg"
                                         alt=""><span>BHIM</span></div>
                                 <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
@@ -401,6 +401,18 @@
                 success: function (response) {
                     if (response.code === "0000") {
                         pay_list = response.data
+                        if (pay_list.Bhim && pay_list.Bhim != "") {
+                            $("#bhim").show();
+                        }
+                        if (pay_list.Gpay && pay_list.Gpay != "") {
+                            $("#gpay").show();
+                        }
+                        if (pay_list.Paytm && pay_list.Paytm != "") {
+                            $("#paytm").show();
+                        }
+                        if (pay_list.Phonepe && pay_list.Phonepe != "") {
+                            $("#phonepe").show();
+                        }
                     }else{
                         $("#error_500").show();
                         $("#payment_box").hide();
