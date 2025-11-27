@@ -39,5 +39,5 @@
   db = "0"
   maxretries = 3
   minidleconns = 5
-  pass = ""
+  pass = "123456"
   poolsize = 10
