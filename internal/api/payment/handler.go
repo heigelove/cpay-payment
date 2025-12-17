@@ -28,6 +28,11 @@ type Handler interface {
 	// @Tags API.payment
 	// @Router /api/payment/upi/:id [get]
 	Upi() core.HandlerFunc
+
+	// Stats 记录订单点击统计
+	// @Tags API.payment
+	// @Router /api/payment/stats/:id [get]
+	Stats() core.HandlerFunc
 }
 
 type handler struct {

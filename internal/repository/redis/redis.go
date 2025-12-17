@@ -57,6 +57,10 @@ type Repo interface {
 	SMembers(key string) ([]string, error)
 	SIsMember(key string, member interface{}) (bool, error)
 	SCard(key string) (int64, error)
+	// Redis Sorted Set operations
+	ZIncrBy(key string, increment float64, member string) (float64, error)
+	ZScore(key string, member string) (float64, error)
+	ZRevRangeWithScores(key string, start, stop int64) ([]redis.Z, error)
 }
 
 type cacheRepo struct {
@@ -334,6 +338,33 @@ func (c *cacheRepo) SCard(key string) (int64, error) {
 	result, err := c.client.SCard(key).Result()
 	if err != nil {
 		return 0, errors.Wrapf(err, "redis scard key: %s err", key)
+	}
+	return result, nil
+}
+
+// ZIncrBy 为有序集合中的成员增加分数
+func (c *cacheRepo) ZIncrBy(key string, increment float64, member string) (float64, error) {
+	result, err := c.client.ZIncrBy(key, increment, member).Result()
+	if err != nil {
+		return 0, errors.Wrapf(err, "redis zincrby key: %s member: %s err", key, member)
+	}
+	return result, nil
+}
+
+// ZScore 获取有序集合中成员的分数
+func (c *cacheRepo) ZScore(key string, member string) (float64, error) {
+	result, err := c.client.ZScore(key, member).Result()
+	if err != nil {
+		return 0, errors.Wrapf(err, "redis zscore key: %s member: %s err", key, member)
+	}
+	return result, nil
+}
+
+// ZRevRangeWithScores 按分数从高到低获取有序集合中的成员和分数
+func (c *cacheRepo) ZRevRangeWithScores(key string, start, stop int64) ([]redis.Z, error) {
+	result, err := c.client.ZRevRangeWithScores(key, start, stop).Result()
+	if err != nil {
+		return nil, errors.Wrapf(err, "redis zrevrange key: %s err", key)
 	}
 	return result, nil
 }

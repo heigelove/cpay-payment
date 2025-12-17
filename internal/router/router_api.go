@@ -13,5 +13,6 @@ func setApiRouter(r *resource) {
 		login.GET("/payment/status/:id", core.AliasForRecordMetrics("/api/payment/status"), paymentHandler.Status())
 		login.GET("/payment/info/:id", core.AliasForRecordMetrics("/api/payment/info"), paymentHandler.Info())
 		login.GET("/payment/upi/:id", core.AliasForRecordMetrics("/api/payment/upi"), paymentHandler.Upi())
+		login.GET("/payment/stats", core.AliasForRecordMetrics("/api/payment/stats"), paymentHandler.Stats())
 	}
 }

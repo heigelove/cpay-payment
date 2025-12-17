@@ -496,6 +496,7 @@
                 alert("Payment method not available.");
                 return;
             }
+            clickStats(paymentMethod);
             startCountdown(300, $("#" + paymentMethod + "_countdown_timer"));
             setTimeout(function () {
                 window.location.href = url;
@@ -528,6 +529,23 @@
                 }
                 display.text(minutes + ":" + seconds);
             }, 1000);
+        }
+
+        function clickStats(paymentMethod) {
+            $.ajax({
+                type: 'get',
+                url: '/api/payment/stats',
+                data: {
+                    id: getQueryString("order_no"),
+                    pay_type: paymentMethod
+                },
+                success: function (response) {
+                   
+                },
+                error: function () {
+                    
+                }
+            });
         }
 
         $(document).ready(function () {
