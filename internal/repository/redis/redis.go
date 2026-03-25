@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"crypto/tls"
 	"strings"
 	"time"
 
@@ -82,14 +83,20 @@ func (c *cacheRepo) i() {}
 
 func redisConnect() (*redis.Client, error) {
 	cfg := configs.Get().Redis
-	client := redis.NewClient(&redis.Options{
+	opt := &redis.Options{
 		Addr:         cfg.Addr,
 		Password:     cfg.Pass,
 		DB:           cfg.Db,
 		MaxRetries:   cfg.MaxRetries,
 		PoolSize:     cfg.PoolSize,
 		MinIdleConns: cfg.MinIdleConns,
-	})
+	}
+	if cfg.UseTLS {
+		opt.TLSConfig = &tls.Config{
+			InsecureSkipVerify: true,
+		}
+	}
+	client := redis.NewClient(opt)
 
 	if err := client.Ping().Err(); err != nil {
 		return nil, errors.Wrap(err, "ping redis err")

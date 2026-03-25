@@ -45,6 +45,7 @@ type Config struct {
 		MaxRetries   int    `toml:"maxRetries"`
 		PoolSize     int    `toml:"poolSize"`
 		MinIdleConns int    `toml:"minIdleConns"`
+		UseTLS       bool   `toml:"useTLS"`
 	} `toml:"redis"`
 
 	Mail struct {
@@ -128,7 +129,7 @@ func init() {
 		if err := viper.WriteConfig(); err != nil {
 			panic(err)
 		}
-	}else {
+	} else {
 		// 磁盘配置文件已存在，启动时从磁盘读取最新内容（覆盖编译期嵌入的值）
 		if err := viper.ReadInConfig(); err != nil {
 			panic(err)
