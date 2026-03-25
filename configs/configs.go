@@ -128,6 +128,14 @@ func init() {
 		if err := viper.WriteConfig(); err != nil {
 			panic(err)
 		}
+	}else {
+		// 磁盘配置文件已存在，启动时从磁盘读取最新内容（覆盖编译期嵌入的值）
+		if err := viper.ReadInConfig(); err != nil {
+			panic(err)
+		}
+		if err := viper.Unmarshal(config); err != nil {
+			panic(err)
+		}
 	}
 
 	viper.WatchConfig()
