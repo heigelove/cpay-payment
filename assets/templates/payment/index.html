@@ -269,6 +269,16 @@
                                         </polyline>
                                     </svg></div>
                             </div>
+                            <div class="_payment-button_5ii3x_1" style="display: none;" id="upi" onclick="checkPayment('upi')">
+                                <div class="_payment-button__left_5ii3x_17"><img src="/assets/bootstrap/res/upi.svg"
+                                        alt=""><span>UPI Pay</span></div>
+                                <div class="_payment-button__arrow_5ii3x_33"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 18 18">
+                                        <polyline fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2" points="6.5 3.5 12.5 9 6.5 14.5">
+                                        </polyline>
+                                    </svg></div>
+                            </div>
                         </div>
                     </div>
 
@@ -365,6 +375,24 @@
                         </div>
                     </div>
 
+                    <!-- UPI Payment Section -->
+                    <div class="_content_18l8j_1" id="upi_payment_section" style="display: none;">
+                        <div class="_box_1rf51_1">
+                            <div class="_payment-countdown_18l8j_46">
+                                <p><strong class="countdown_timer" id="upi_countdown_timer">5:00</strong></p>
+                                <p><span>mins</span></p>
+                            </div>
+                            <div class="_amount_18l8j_10"></div>
+                            <div class="_tips_18l8j_18">Please open &amp; complete the payment in your Bank app</div><img
+                                src="/assets/bootstrap/res/upi.svg"
+                                class="_head-icon_18l8j_5">
+                        </div>
+                        <div class="_choose-other-payment_18l8j_25">
+                            <p><strong>Can’t pay with UPI ?</strong></p>
+                            <p><a href="javascript:;" class="back_options">Choose other payment options</a></p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="_footer_5o0k3_31">
@@ -413,6 +441,9 @@
                         }
                         if (pay_list.phonepe && pay_list.phonepe != "") {
                             $("#phonepe").show();
+                        }
+                        if (pay_list.upi && pay_list.upi != "") {
+                            $("#upi").show();
                         }
                     }else{
                         $("#error_500").show();
