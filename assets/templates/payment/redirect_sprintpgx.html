@@ -7,18 +7,18 @@
 <!-- ── Step 2: Load SDK in your HTML ─────────────────────────────────── -->
 <script src="https://uat-pg-x-checkout.sprintnxt.in/v1/sdk.js"></script>
 
+</head>
+<body>
+   
 <!-- ── Step 3: Open checkout ─────────────────────────────────────────── -->
 <script>
-  var pg = new PGCheckout({
-    checkout_url: '{{.data.checkout_url}}',   // data.checkout_url (Step 1)
-    onSuccess: function(data) { console.log('paid', data.status, data.transaction_id); },
-    onFailure: function(data) { console.log('failed', data.transaction_id); },
-    onClose:   function()     { console.log('closed'); }
-  });
-  pg.open();
-</script>
-
-</head>
-<body></body>
+    var pg = new PGCheckout({
+      checkout_url: '{{.data.checkout_url}}',   // data.checkout_url (Step 1)
+      onSuccess: function(data) { console.log('paid', data.status, data.transaction_id); },
+      onFailure: function(data) { console.log('failed', data.transaction_id); },
+      onClose:   function()     { console.log('closed'); }
+    });
+    pg.open();
+  </script>
 </body>
 </html>
