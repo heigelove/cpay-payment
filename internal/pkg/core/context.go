@@ -147,6 +147,9 @@ type Context interface {
 	// ResponseWriter 获取 ResponseWriter 对象
 	ResponseWriter() gin.ResponseWriter
 
+	// QueryValue 获取 Query 参数
+	QueryValue(key string) string
+
 	FormFile(name string) (*multipart.FileHeader, error)
 }
 
@@ -411,4 +414,9 @@ func (c *context) ResponseWriter() gin.ResponseWriter {
 // 注意：如果使用了 ShouldBindForm()，则会覆盖掉 FormFile 的内容
 func (c *context) FormFile(name string) (*multipart.FileHeader, error) {
 	return c.ctx.FormFile(name)
+}
+
+// QueryValue 获取 Query 参数
+func (c *context) QueryValue(key string) string {
+	return c.ctx.Query(key)
 }
