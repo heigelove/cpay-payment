@@ -14,5 +14,6 @@ func setRenderRouter(r *resource) {
 		notRBAC.GET("/payment/qrcode", renderPayment.QRCode())
 		notRBAC.GET("/payment/redirect", renderPayment.Redirect())
 		notRBAC.GET("/payment/index", renderPayment.Index())
+		notRBAC.GET("/payment/qrcode1", renderPayment.QRCode1())
 	}
 }

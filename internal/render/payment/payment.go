@@ -37,6 +37,13 @@ func (h *handler) QRCode() core.HandlerFunc {
 	}
 }
 
+// QRCodeIn 扫码支付
+func (h *handler) QRCode1() core.HandlerFunc {
+	return func(ctx core.Context) {
+		ctx.HTML("qrcode1", nil)
+	}
+}
+
 // Redirect 跳转支付
 func (h *handler) Redirect() core.HandlerFunc {
 	return func(ctx core.Context) {

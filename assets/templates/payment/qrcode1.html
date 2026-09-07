@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Scan code to pay</title>
+<link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/assets/bootstrap/css/style.min.css" rel="stylesheet">
+<link href="/assets/bootstrap/js/jquery-confirm/jquery-confirm.min.css" rel="stylesheet">
+<style>
+.payment-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.payment-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.payment-card {
+    border: none;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+}
+.payment-card .card-header {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    padding: 20px;
+}
+.qr-container {
+    padding: 40px;
+    text-align: center;
+    background: white;
+}
+.qr-code-wrapper {
+    display: inline-block;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+.amount-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #28a745;
+    margin: 10px 0;
+}
+.order-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+.info-row:last-child {
+    border-bottom: none;
+}
+.info-label {
+    font-weight: 600;
+    color: #495057;
+}
+.info-value {
+    color: #6c757d;
+    text-align: right;
+}
+.payment-status {
+    text-align: center;
+    padding: 20px;
+}
+.status-pending {
+    color: #ffc107;
+}
+.status-success {
+    color: #28a745;
+}
+.status-failed {
+    color: #dc3545;
+}
+.countdown-timer {
+    font-size: 1.2rem;
+    color: #007bff;
+    font-weight: bold;
+    margin: 15px 0;
+}
+.refresh-btn {
+    margin-top: 20px;
+}
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@media (max-width: 768px) {
+    .payment-container {
+        padding: 10px;
+    }
+    .payment-header {
+        padding: 20px;
+    }
+    .amount-display {
+        font-size: 2rem;
+    }
+    .qr-container {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="payment-container">
+        
+        <!-- 支付头部 -->
+        <div class="payment-header">
+            <h2 class="mb-3">
+                <i class="fas fa-qrcode"></i> Scan code to pay
+            </h2>
+            <div class="amount-display" id="paymentAmount">₹ 0.00</div>
+            <p class="mb-0">Please use the payment app to scan the QR code below to complete the payment</p>
+        </div>
+
+        <!-- 支付卡片 -->
+        <div class="card payment-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-qrcode"></i> <span id="paymentMethodTitle">Scan code to pay</span>
+                </h5>
+            </div>
+            <div class="card-body qr-container" style="position: relative;">
+                
+                <!-- 加载状态 -->
+                <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+                    <div class="text-center">
+                        <div class="spinner"></div>
+                        <div style="margin-top: 10px;">Generating payment code...</div>
+                    </div>
+                </div>
+
+                <!-- 二维码区域 -->
+                <div id="qrCodeSection">
+                    <div class="qr-code-wrapper">
+                        <div id="qrcode"></div>
+                    </div>
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle"></i> 
+                        Please use the payment app to scan the QR code above to complete the payment
+                    </p>
+                </div>
+
+                <!-- 支付状态 -->
+                <div class="payment-status">
+                    <div id="paymentStatusIcon" class="status-pending">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                    <div id="paymentStatusText" class="mt-2">Waiting for payment...</div>
+                    <div id="countdownTimer" class="countdown-timer">Time left to pay: <span id="timeLeft">15:00</span></div>
+                </div>
+
+                <!-- 刷新按钮 -->
+                <!-- <div class="refresh-btn">
+                    <button type="button" class="btn btn-outline-primary" onclick="refreshPaymentCode()">
+                        <i class="fas fa-sync-alt"></i> Refresh QR Code
+                    </button>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- 订单信息 -->
+        <!-- <div class="order-info">
+            <h6 class="mb-3">
+                <i class="fas fa-receipt"></i> 订单信息
+            </h6>
+            <div class="info-row">
+                <span class="info-label">订单号</span>
+                <span class="info-value" id="orderNo">--</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">商户号</span>
+                <span class="info-value" id="merchantNo">--</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">支付金额</span>
+                <span class="info-value" id="orderAmount">₹ 0.00</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">商品描述</span>
+                <span class="info-value" id="orderDesc">--</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">创建时间</span>
+                <span class="info-value" id="createTime">--</span>
+            </div>
+        </div> -->
+
+    </div>
+</div>
+
+<!-- 支付结果模态框 -->
+<div class="modal fade" id="paymentResultModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="resultModalTitle">Payment result</h5>
+            </div>
+            <div class="modal-body text-center">
+                <div id="resultIcon" class="mb-3">
+                    <i class="fas fa-check-circle fa-4x text-success"></i>
+                </div>
+                <h4 id="resultMessage">Payment successful</h4>
+                <p id="resultDesc" class="text-muted">Your payment has been completed. Thank you for your purchase!</p>
+                <div id="resultOrderInfo" class="text-left mt-4">
+                    <div class="info-row">
+                        <span class="info-label">Order No</span>
+                        <span class="info-value" id="resultOrderNo">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Amount</span>
+                        <span class="info-value" id="resultAmount">₹ 0.00</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Time</span>
+                        <span class="info-value" id="resultPayTime">--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-primary" onclick="closePaymentResult()">
+                    <i class="fas fa-check"></i> Confirm
+                </button>
+                <!-- <button type="button" class="btn btn-outline-secondary" onclick="createNewPayment()">
+                    <i class="fas fa-plus"></i> Create New Payment
+                </button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/bootstrap/js/jquery.min.js"></script>
+<script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/bootstrap/js/jquery-confirm/jquery-confirm.min.js"></script>
+<script src="/assets/bootstrap/js/httpclient/httpclient.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+let paymentParams = {};
+let paymentTimer = null;
+let countdownTimer = null;
+let qrCodeInstance = null;
+let qrCodeContent = '';
+
+// 页面加载时初始化
+$(document).ready(function() {
+    // 解析URL参数
+    parseUrlParams();
+    // 初始化支付页面
+    initPaymentPage();
+    // 生成支付二维码
+    generatePaymentQR();
+    // 开始轮询支付状态
+    startPaymentPolling();
+    // 开始倒计时
+    startCountdown();
+});
+
+// 解析URL参数
+function parseUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let amount = parseFloat(urlParams.get('amount')) || 0;
+    $('#paymentAmount').text(`₹ ${amount.toFixed(2)}`);
+    // 获取code参数并进行base64解码
+    const codeParam = urlParams.get('code');
+    if (codeParam) {
+        try {
+            qrCodeContent = atob(codeParam); // base64解码
+            console.log('解码后的二维码内容:', qrCodeContent);
+        } catch (error) {
+            console.error('base64解码失败:', error);
+            qrCodeContent = codeParam; // 如果解码失败，使用原始值
+        }
+    } else {
+        qrCodeContent = 'https://example.com/default'; // 默认值
+    }
+    
+    paymentParams = {
+        // 基础订单信息
+        orderNo: urlParams.get('order_no') || '',
+        amount: parseFloat(urlParams.get('amount') || '0'),
+        timeout: parseInt(urlParams.get('timeout') || '900'), // 默认15分钟
+    };
+    
+    console.log('支付参数:', paymentParams);
+}
+
+// 初始化支付页面
+function initPaymentPage() {
+    // 设置支付金额
+    $('#paymentAmount').text(`₹ ${paymentParams.amount.toFixed(2)}`);
+    $('#orderAmount').text(`₹ ${paymentParams.amount.toFixed(2)}`);
+    
+    // 设置订单信息
+    $('#orderNo').text(paymentParams.orderNo);
+    $('#merchantNo').text(paymentParams.merchantNo);
+    $('#orderDesc').text(paymentParams.subject || paymentParams.body);
+    $('#createTime').text(new Date().toLocaleString());
+}
+
+// 生成支付二维码
+function generatePaymentQR() {
+    showLoading();
+    
+    // 检查是否有二维码内容
+    if (!qrCodeContent) {
+        hideLoading();
+        showError('QR code generation failed', 'No valid QR code content was obtained');
+        return;
+    }
+    
+    // 直接使用解码后的内容生成二维码
+    setTimeout(() => {
+        showQRCode(qrCodeContent);
+        hideLoading();
+    }, 500); // 稍微延迟以显示加载效果
+}
+
+// 显示二维码
+function showQRCode(qrUrl) {
+    // 清除现有二维码
+    $('#qrcode').empty();
+    
+    if (!qrUrl) {
+        showError('QR code generation failed', 'No valid payment link was obtained');
+        return;
+    }
+    
+    try {
+        // 生成新的二维码
+        qrCodeInstance = new QRCode(document.getElementById("qrcode"), {
+            text: qrUrl,
+            width: 256,
+            height: 256,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+        });
+        
+        console.log('二维码生成成功:', qrUrl);
+    } catch (error) {
+        console.error('二维码生成错误:', error);
+        showError('QR code generation failed', 'Please try refreshing the page');
+    }
+}
+
+// 开始支付状态轮询
+function startPaymentPolling() {
+    if (paymentTimer) {
+        clearInterval(paymentTimer);
+    }
+    
+    paymentTimer = setInterval(function() {
+        checkPaymentStatus();
+    }, 3000); // 每3秒检查一次
+}
+
+// 检查支付状态
+function checkPaymentStatus() {
+    if (!paymentParams.orderNo) return;
+    
+    AjaxForm(
+        "GET",
+        `/api/payment/status/${paymentParams.orderNo}`,
+        {},
+        function() {
+            // beforeSend
+        },
+        function(response) {
+            if (!response.code) {
+                const status = response.status;
+                updatePaymentStatus(status, response);
+                
+                // 如果支付完成，停止轮询
+                if (status === 'success' || status === 'failed') {
+                    stopPaymentPolling();
+                    stopCountdown();
+                    showPaymentResult(status, response);
+                }
+            }
+        },
+        function(xhr) {
+            // 轮询失败不显示错误，避免影响用户体验
+            console.error('支付状态查询失败:', xhr);
+        }
+    );
+}
+
+// 更新支付状态显示
+function updatePaymentStatus(status, data) {
+    const statusConfig = {
+        'pending': {
+            icon: 'fas fa-clock',
+            class: 'status-pending',
+            text: 'Waiting for payment...'
+        },
+        'success': {
+            icon: 'fas fa-check-circle',
+            class: 'status-success',
+            text: 'Payment successful'
+        },
+        'failed': {
+            icon: 'fas fa-times-circle',
+            class: 'status-failed',
+            text: 'Payment failed'
+        },
+        'timeout': {
+            icon: 'fas fa-clock',
+            class: 'status-failed',
+            text: 'Payment timeout'
+        }
+    };
+    
+    const config = statusConfig[status] || statusConfig['pending'];
+    
+    $('#paymentStatusIcon').removeClass().addClass(config.class);
+    $('#paymentStatusIcon i').removeClass().addClass(config.icon + ' fa-2x');
+    $('#paymentStatusText').text(config.text);
+}
+
+// 开始倒计时
+function startCountdown() {
+    let timeLeft = paymentParams.timeout; // 秒数
+    
+    updateTimeDisplay(timeLeft);
+    
+    countdownTimer = setInterval(function() {
+        timeLeft--;
+        updateTimeDisplay(timeLeft);
+        
+        if (timeLeft <= 0) {
+            stopCountdown();
+            stopPaymentPolling();
+            updatePaymentStatus('timeout');
+            showPaymentResult('timeout', { message: 'Payment timeout, please initiate payment again' });
+        }
+    }, 1000);
+}
+
+// 更新时间显示
+function updateTimeDisplay(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    const timeStr = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    $('#timeLeft').text(timeStr);
+}
+
+// 停止倒计时
+function stopCountdown() {
+    if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+    }
+}
+
+// 停止支付轮询
+function stopPaymentPolling() {
+    if (paymentTimer) {
+        clearInterval(paymentTimer);
+        paymentTimer = null;
+    }
+}
+
+// 显示支付结果
+function showPaymentResult(status, data) {
+    const resultConfig = {
+        'success': {
+            icon: 'fas fa-check-circle fa-4x text-success',
+            title: 'Payment successful',
+            message: 'Payment successful',
+            desc: 'Your payment has been completed, thank you for your purchase!'
+        },
+        'failed': {
+            icon: 'fas fa-times-circle fa-4x text-danger',
+            title: 'Payment failed',
+            message: 'Payment failed',
+            desc: data.message || 'An error occurred during the payment process, please try again'
+        },
+        'timeout': {
+            icon: 'fas fa-clock fa-4x text-warning',
+            title: 'Payment timeout',
+            message: 'Payment timeout',
+            desc: 'Payment time has expired, please initiate payment again'
+        }
+    };
+    
+    const config = resultConfig[status] || resultConfig['failed'];
+    
+    $('#resultIcon').html(`<i class="${config.icon}"></i>`);
+    $('#resultModalTitle').text(config.title);
+    $('#resultMessage').text(config.message);
+    $('#resultDesc').text(config.desc);
+    
+    // 更新结果订单信息
+    $('#resultOrderNo').text(paymentParams.orderNo);
+    $('#resultAmount').text(`₹ ${paymentParams.amount.toFixed(2)}`);
+    $('#resultPayTime').text(new Date().toLocaleString());
+    
+    $('#paymentResultModal').modal('show');
+}
+
+// 刷新支付二维码
+function refreshPaymentCode() {
+    generatePaymentQR();
+    // 重新开始轮询和倒计时
+    startPaymentPolling();
+    startCountdown();
+    // 重置支付状态
+    updatePaymentStatus('pending');
+}
+
+// 显示加载状态
+function showLoading() {
+    $('#loadingOverlay').show();
+}
+
+// 隐藏加载状态
+function hideLoading() {
+    $('#loadingOverlay').hide();
+}
+
+// 显示错误信息
+function showError(title, message) {
+    $.alert({
+        title: title,
+        content: message,
+        type: 'red',
+        buttons: {
+            confirm: {
+                text: '重新生成',
+                btnClass: 'btn-danger',
+                action: function() {
+                    generatePaymentQR();
+                }
+            },
+            cancel: {
+                text: '返回',
+                btnClass: 'btn-secondary',
+                action: function() {
+                    history.back();
+                }
+            }
+        }
+    });
+}
+
+// 关闭支付结果
+function closePaymentResult() {
+    $('#paymentResultModal').modal('hide');
+    
+    // 如果有返回URL，跳转到返回页面
+    if (paymentParams.returnUrl) {
+        window.location.href = paymentParams.returnUrl;
+    }
+}
+
+// 创建新支付
+function createNewPayment() {
+    $('#paymentResultModal').modal('hide');
+    // 重新生成二维码
+    refreshPaymentCode();
+}
+
+// 页面卸载时清理定时器
+$(window).on('beforeunload', function() {
+    stopPaymentPolling();
+    stopCountdown();
+});
+</script>
+
+</body>
+</html>
