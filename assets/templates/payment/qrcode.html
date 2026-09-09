@@ -355,7 +355,7 @@
                 success: function (response) {
                     if (response.code === '0000') {
                         pay_list = response.data || {};
-                        var methods = ['paytm', 'phonepe', 'gpay', 'bhim', 'upi'];
+                        var methods = ['paytm', 'phonepe', 'gpay', 'bhim'];
                         var firstShown = null;
                         methods.forEach(function (key) {
                             if (pay_list[key] && pay_list[key] !== '') {
