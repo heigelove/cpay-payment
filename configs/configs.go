@@ -4,14 +4,10 @@ import (
 	"bytes"
 	_ "embed"
 	"io"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/heigelove/cpay-payment/pkg/env"
-	"github.com/heigelove/cpay-payment/pkg/file"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
@@ -120,33 +116,33 @@ func init() {
 		panic(err)
 	}
 
-	viper.SetConfigName(env.Active().Value() + "_configs")
-	viper.AddConfigPath("./configs")
+	// viper.SetConfigName(env.Active().Value() + "_configs")
+	// viper.AddConfigPath("./configs")
 
-	configFile := "./configs/" + env.Active().Value() + "_configs.toml"
-	_, ok := file.IsExists(configFile)
-	if !ok {
-		if err := os.MkdirAll(filepath.Dir(configFile), 0766); err != nil {
-			panic(err)
-		}
+	// configFile := "./configs/" + env.Active().Value() + "_configs.toml"
+	// _, ok := file.IsExists(configFile)
+	// if !ok {
+	// 	if err := os.MkdirAll(filepath.Dir(configFile), 0766); err != nil {
+	// 		panic(err)
+	// 	}
 
-		f, err := os.Create(configFile)
-		if err != nil {
-			panic(err)
-		}
-		defer f.Close()
+	// 	f, err := os.Create(configFile)
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	defer f.Close()
 
-		if err := viper.WriteConfig(); err != nil {
-			panic(err)
-		}
-	}
+	// 	if err := viper.WriteConfig(); err != nil {
+	// 		panic(err)
+	// 	}
+	// }
 
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		if err := viper.Unmarshal(config); err != nil {
-			panic(err)
-		}
-	})
+	// viper.WatchConfig()
+	// viper.OnConfigChange(func(e fsnotify.Event) {
+	// 	if err := viper.Unmarshal(config); err != nil {
+	// 		panic(err)
+	// 	}
+	// })
 }
 
 func Get() Config {
