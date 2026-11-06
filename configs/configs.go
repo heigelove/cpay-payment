@@ -80,8 +80,14 @@ var (
 	//go:embed uat_configs.toml
 	uatConfigs []byte
 
-	//go:embed pro_configs.toml
+	//go:embed pro/toop_configs.toml
 	proConfigs []byte
+
+	//go:embed pro/hours_configs.toml
+	hoursConfigs []byte
+
+	//go:embed pro/ti_configs.toml
+	tiConfigs []byte
 )
 
 func init() {
@@ -96,6 +102,10 @@ func init() {
 		r = bytes.NewReader(uatConfigs)
 	case "pro":
 		r = bytes.NewReader(proConfigs)
+	case "hours":
+		r = bytes.NewReader(hoursConfigs)
+	case "ti":
+		r = bytes.NewReader(tiConfigs)
 	default:
 		r = bytes.NewReader(fatConfigs)
 	}
@@ -127,14 +137,6 @@ func init() {
 		defer f.Close()
 
 		if err := viper.WriteConfig(); err != nil {
-			panic(err)
-		}
-	} else {
-		// 磁盘配置文件已存在，启动时从磁盘读取最新内容（覆盖编译期嵌入的值）
-		if err := viper.ReadInConfig(); err != nil {
-			panic(err)
-		}
-		if err := viper.Unmarshal(config); err != nil {
 			panic(err)
 		}
 	}
